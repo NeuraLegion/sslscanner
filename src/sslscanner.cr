@@ -17,7 +17,7 @@ module SSLScanner
           if ssl_handshake(cipher, protocol_bits)
             eva = SSLScanner::Evalutation.new(cipher, symbol)
             cipher_info = eva.evaluate
-            puts "#{symbol} -- #{cipher_info[:cipher]} -- #{cipher_info[:bits]} -- #{cipher_info[:strength]} -- #{cipher_info[:issues]}"
+            puts "#{symbol} -- #{cipher} -- #{cipher_info[:bits]} -- #{cipher_info[:strength]} -- #{cipher_info[:issues]}"
           end
         end
       end
@@ -36,6 +36,7 @@ module SSLScanner
         s = socket
         c = OpenSSL::SSL::Context::Client.new
         c.ciphers = cipher
+        c.verify_mode = OpenSSL::SSL::VerifyMode::NONE
         protocol.each do |option|
           c.add_options(option)
         end

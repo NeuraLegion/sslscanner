@@ -3,7 +3,7 @@ module SSLScanner
     def initialize(cipher : String, protocol : Symbol)
       @cipher = cipher
       @protocol = protocol
-      @evaluated = {:cipher => cipher}
+      @evaluated = Hash(Symbol, (String | Colorize::Object(String))).new
     end
 
     def evaluate
@@ -16,11 +16,11 @@ module SSLScanner
     def cipher_strength
       case @cipher
       when /(MD5|RC4|NULL|RC2|DES|GOST|EXP)/i
-        "low"
+        "low".colorize(:red)
       when /(128|3DES)/i
-        "medium"
+        "medium".colorize(:yellow)
       when /(SHA384|ECDHE|ECDSA)/i
-        "high"
+        "high".colorize(:green)
       else
         "normal"
       end
@@ -29,7 +29,17 @@ module SSLScanner
     def bit_size
       bits = @cipher.gsub(/\D/, "")[0..2]
       bits = "" if bits.size < 2
-      bits
+      if bits.to_i < 128
+        bits.colorize(:red)
+      elsif bits.to_i < 256
+        bits.colorize(:yellow)
+      elsif bits.to_i > 300
+        bits.colorize(:green)
+      else
+        bits
+      end
+    rescue
+      ""
     end
 
     def issue

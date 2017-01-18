@@ -33,7 +33,8 @@ crystal build bin/scan.cr --release
 - [ ] Add more issues (SSL Issues)  
 - [ ] Multiscanning (using fibers)  
 - [ ] Export results to pdf\txt\csv\etc..  
-- [ ] Add local OpenSSL installation with all ciphers enabled so we dont need to relay on system openssl  
+- [ ] Add local OpenSSL installation with all ciphers enabled so we don't need to relay on system openssl  
+- [ ] Add more checks: HeartBleed, compression, renegotiation, etc..  
 
 ## Contributing
 
@@ -45,4 +46,4 @@ crystal build bin/scan.cr --release
 
 ## Contributors
 
-- [bararchy]](https://github.com/bararchy) - creator, maintainer
+- [bararchy](https://github.com/bararchy) - creator, maintainer
