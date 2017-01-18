@@ -21,6 +21,13 @@ scanner = SSLScanner::Scan.new("google.com", 443)
 scanner.run
 ```
 
+Or you can use the example under /bin
+
+```bash
+crystal build bin/scan.cr --release
+./scan google.com 443
+```
+
 ## Development
 
 - [ ] Add more issues (SSL Issues)  
