@@ -16,13 +16,17 @@ dependencies:
 
 ```crystal
 require "sslscanner"
+# This will start a scan of google.com
+scanner = SSLScanner::Scan.new("google.com", 443)
+scanner.run
 ```
-
-TODO: Write usage instructions here
 
 ## Development
 
-TODO: Write development instructions here
+- [ ] Add more issues (SSL Issues)  
+- [ ] Multiscanning (using fibers)  
+- [ ] Export results to pdf\txt\csv\etc..  
+- [ ] Add local OpenSSL installation with all ciphers enabled so we dont need to relay on system openssl  
 
 ## Contributing
 
