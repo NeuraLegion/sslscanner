@@ -31,7 +31,7 @@ crystal build bin/scan.cr --release
 ## Development
 
 - [ ] Add more issues (SSL Issues)  
-- [ ] Multiscanning (using fibers)  
+- [x] Multiscanning (using fibers)  
 - [ ] Export results to pdf\txt\csv\etc..  
 - [ ] Add local OpenSSL installation with all ciphers enabled so we don't need to relay on system openssl  
 - [ ] Add more checks: HeartBleed, compression, renegotiation, etc..  
