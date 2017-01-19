@@ -11,13 +11,41 @@ module SSLScanner
     end
 
     def run
-      puts "The server supports those ciphers and protocols"
+      sort_and_print(gather_results)
+    end
+
+    def gather_results
+      scans = [] of Hash(Symbol, (String | Colorize::Object(String)))
+      results = [] of Int32
+      spawns = [] of Int32
       SSLScanner.protocols.each do |symbol, protocol_bits|
         SSLScanner.ciphers.each do |cipher|
-          if ssl_handshake(cipher, protocol_bits)
-            eva = SSLScanner::Evalutation.new(cipher, symbol)
-            cipher_info = eva.evaluate
-            puts "#{symbol} -- #{cipher} -- #{cipher_info[:bits]} -- #{cipher_info[:strength]} -- #{cipher_info[:issues]}"
+          spawn do
+            spawns << 0
+            if ssl_handshake(cipher, protocol_bits)
+              eva = SSLScanner::Evalutation.new(cipher, symbol)
+              scans << eva.evaluate
+            end
+            results << 0
+          end
+        end
+      end
+      sleep 1
+      until results.size == spawns.size
+        print "\rScanning: #{results.size}/#{spawns.size}"
+        sleep 1
+      end
+      scans
+    end
+
+    def sort_and_print(results : Array(Hash(Symbol, Colorize::Object(String) | String)))
+      puts "The server #{@ip}:#{@port} supports those ciphers and protocols".colorize(:blue)
+      SSLScanner.protocols.each do |symbol, protocol_bits|
+        results.each do |result|
+          if result[:protocol] == symbol.to_s
+            puts "#{result[:protocol]} -- #{result[:cipher]} -- #{result[:bits]} -- #{result[:strength]} -- #{result[:issues]}"
+          else
+            next
           end
         end
       end
