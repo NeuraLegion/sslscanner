@@ -1,6 +1,11 @@
 # sslscanner
 
-TODO: Write a description here
+SSL cipher and protocol scanner in Crystal  
+![alt text][scan]
+
+[scan]: https://sc-cdn.scaleengine.net/i/e9ae5c37a96b1422e565c3456658776e.png "Example Scan"
+
+
 
 ## Installation
 
