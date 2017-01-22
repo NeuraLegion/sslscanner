@@ -1,3 +1,8 @@
+#  This file was taken from sslscan (https://github.com/rbsec/sslscan) 
+#  All Credits goes to them for the OpenSSL static build stuff :) 
+#
+#
+#
 # set gcc as default if CC is not set
 ifndef CC
   CC=gcc
