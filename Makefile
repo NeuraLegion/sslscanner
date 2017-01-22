@@ -52,7 +52,11 @@ all: sslscanner
 	@echo
 
 sslscanner: $(SRCS)
+ifeq ($(STATIC_BUILD), TRUE)
+	crystal build ${SRCS} --release	--link-flags "-static ${LDFLAGS} ${CFLAGS} ${CPPFLAGS} ${DEFINES} ${LIBS} -I/usr/lib/ -lpcre -levent"
+else
 	crystal build ${SRCS} --release 
+endif
 
 install:
 	@if [ ! -f sslscanner ] ; then \
