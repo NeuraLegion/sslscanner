@@ -32,6 +32,8 @@ PWD          = $(shell pwd)/openssl
 LDFLAGS      += -L${PWD}/
 CFLAGS       += -I${PWD}/include/ -I${PWD}/
 LIBS         = -lssl -lcrypto -lz
+endif
+
 ifneq ($(OS), FreeBSD)
 	LIBS += -ldl
 endif
@@ -106,5 +108,5 @@ static: openssl/libcrypto.a
 
 clean:
 	if [ -d openssl -a -d openssl/.git ]; then ( cd ./openssl; git clean -fx ); fi;
-	rm -f sslscan
+	rm -f scan
 	rm -f .openssl.is.fresh
