@@ -33,10 +33,10 @@ endif
 
 # for static linking
 ifeq ($(STATIC_BUILD), TRUE)
-PWD          = $(shell pwd)/openssl
+PWD          = $(shell pwd)/static_libs
 LDFLAGS      += -L${PWD}/
-CFLAGS       += -I${PWD}/include/ -I${PWD}/
-LIBS         = -lssl -lcrypto -lz
+CFLAGS       += -I${PWD}/include/ -I${PWD}/ -I${PWD}/pcre/
+LIBS         = -lssl -lcrypto -lz -lpcre -levent
 endif
 
 ifneq ($(OS), FreeBSD)
@@ -44,7 +44,7 @@ ifneq ($(OS), FreeBSD)
 endif
 GIT_VERSION  := $(GIT_VERSION)-static
 
-.PHONY: all sslscanner clean install uninstall static opensslpull
+.PHONY: all sslscanner clean install uninstall static
 
 all: sslscanner
 	@echo
@@ -58,7 +58,7 @@ all: sslscanner
 
 sslscanner: $(SRCS)
 ifeq ($(STATIC_BUILD), TRUE)
-	crystal build ${SRCS} --release	--link-flags "-static ${LDFLAGS} ${CFLAGS} ${CPPFLAGS} ${DEFINES} ${LIBS} -I/usr/lib/ -lpcre -levent"
+	crystal build ${SRCS} --release --link-flags "-static ${LDFLAGS} ${CFLAGS} ${CPPFLAGS} ${DEFINES} ${LIBS} -I/usr/lib/"
 else
 	crystal build ${SRCS} --release 
 endif
@@ -79,43 +79,8 @@ endif
 uninstall:
 	rm -f $(DESTDIR)$(BINDIR)/sslscanner
 
-.openssl.is.fresh: opensslpull
-	true
-opensslpull:
-	if [ -d openssl -a -d openssl/.git ]; then \
-		cd ./openssl && git checkout OpenSSL_1_0_2-stable && git pull | grep -q "Already up-to-date." && [ -e ../.openssl.is.fresh ] || touch ../.openssl.is.fresh ; \
-	else \
-		git clone --depth 1 -b OpenSSL_1_0_2-stable https://github.com/openssl/openssl ./openssl && cd ./openssl && touch ../.openssl.is.fresh ; \
-	fi
-	# Re-enable SSLv2 EXPORT ciphers
-	sed -i.bak 's/# if 0/# if 1/g' openssl/ssl/s2_lib.c
-	rm openssl/ssl/s2_lib.c.bak
-	# Re-enable weak (<1024 bit) DH keys
-	sed -i.bak 's/dh_size < [0-9]\+/dh_size < 512/g' openssl/ssl/s3_clnt.c
-	rm openssl/ssl/s3_clnt.c.bak
-	# Break the weak DH key test so OpenSSL compiles
-	sed -i.bak 's/dhe512/zzz/g' openssl/test/testssl
-	rm openssl/test/testssl.bak
-
-# Need to build OpenSSL differently on OSX
-ifeq ($(OS), Darwin)
-openssl/Makefile: .openssl.is.fresh
-	cd ./openssl; ./Configure enable-ssl2 enable-weak-ssl-ciphers zlib darwin64-x86_64-cc
-# Any other *NIX platform
-else
-openssl/Makefile: .openssl.is.fresh
-	cd ./openssl; ./config no-shares enable-weak-ssl-ciphers enable-ssl2 zlib
-endif
-
-openssl/libcrypto.a: openssl/Makefile
-	$(MAKE) -C openssl depend
-	$(MAKE) -C openssl all
-	$(MAKE) -C openssl test
-
-static: openssl/libcrypto.a
+static:
 	$(MAKE) sslscanner STATIC_BUILD=TRUE
 
 clean:
-	if [ -d openssl -a -d openssl/.git ]; then ( cd ./openssl; git clean -fx ); fi;
 	rm -f scan
-	rm -f .openssl.is.fresh
