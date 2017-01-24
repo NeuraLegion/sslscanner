@@ -9,6 +9,14 @@ SSL cipher and protocol scanner in Crystal
 
 ## Installation
 
+### As a standalone binery
+```bash
+git clone https://github.com/bararchy/sslscanner
+cd sslscanner
+make # or make static
+```
+
+### As a Crystal lib: 
 Add this to your application's `shard.yml`:
 
 ```yaml
@@ -29,7 +37,7 @@ scanner.run
 Or you can use the example under /bin
 
 ```bash
-crystal build bin/scan.cr --release
+make
 ./scan google.com 443
 ```
 
