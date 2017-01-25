@@ -4,7 +4,7 @@ module SSLScanner
       @cipher = cipher
       @protocol = protocol
       @evaluated = Hash(Symbol, (String | Colorize::Object(String))).new
-      @evaluated[:cipher] = cipher
+      @evaluated[:cipher] = SSLScanner::RFC_NAMES[cipher]
       @evaluated[:protocol] = protocol.to_s
     end
 
@@ -29,8 +29,8 @@ module SSLScanner
     end
 
     def bit_size
-      bits = @cipher.gsub(/\D/, "")[0..2]
-      bits = "" if bits.size < 2
+      bits = %x(openssl ciphers -v #{@cipher}).split[4].gsub(/\D/, "")[-3..-1]
+      bits = "" if bits.size < 2 || bits.size > 400
       if bits.to_i < 128
         bits.colorize(:red)
       elsif bits.to_i < 256
