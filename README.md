@@ -49,6 +49,7 @@ make
 - [ ] Add local OpenSSL installation with all ciphers enabled so we don't need to relay on system openssl  
 - [ ] Add more checks: HeartBleed, compression, renegotiation, etc..  
 - [ ] Add better output formatting, spaces, colors, maybe table of some sort  
+- [ ] Add OptionParser to the bin instead of using ARGV  
 
 ## Contributing
 
