@@ -31,9 +31,9 @@ module SSLScanner
     def bit_size
       bits = %x(openssl ciphers -v #{@cipher}).split[4].gsub(/\D/, "")[-3..-1]
       bits = "" if bits.size < 2 || bits.size > 400
-      if bits.to_i < 128
+      if bits.to_i < 112
         bits.colorize(:red)
-      elsif bits.to_i < 256
+      elsif bits.to_i < 128
         bits.colorize(:yellow)
       elsif bits.to_i > 300
         bits.colorize(:green)
