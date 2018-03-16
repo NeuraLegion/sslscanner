@@ -58,9 +58,9 @@ all: sslscanner
 
 sslscanner: $(SRCS)
 ifeq ($(STATIC_BUILD), TRUE)
-	crystal build ${SRCS} --release --link-flags "-static ${LDFLAGS} ${CFLAGS} ${CPPFLAGS} ${DEFINES} ${LIBS} -I/usr/lib/"
+	crystal build ${SRCS} --release --link-flags "-static ${LDFLAGS} ${CFLAGS} ${CPPFLAGS} ${DEFINES} ${LIBS} -I/usr/lib/" -o sslscanner
 else
-	crystal build ${SRCS} --release 
+	crystal build ${SRCS} --release -o sslscanner
 endif
 
 install:

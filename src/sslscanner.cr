@@ -40,6 +40,7 @@ module SSLScanner
 
     def sort_and_print(results : Array(Hash(Symbol, Colorize::Object(String) | String)))
       puts "\r\nThe server #{@ip}:#{@port} supports those ciphers and protocols".colorize(:blue)
+      #results = results.sort
       SSLScanner.protocols.each do |symbol, protocol_bits|
         results.each do |result|
           if result[:protocol] == symbol.to_s
