@@ -33,7 +33,8 @@ module SSLScanner
       sleep 1
       until results.size == spawns.size
         print "\rScanning: #{results.size}/#{spawns.size}"
-        sleep 1
+        STDOUT.flush
+        sleep 0.1
       end
       scans
     end
